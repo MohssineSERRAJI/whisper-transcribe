@@ -50,3 +50,27 @@ Files whose outputs already exist are skipped; add `--overwrite` to redo them.
 - `auto` picks one language per file from its first 30 seconds. For a darija recording that opens in French (or the reverse), pass `-l ar` or `-l fr`.
 - Darija is written in Arabic script. French words spoken inside darija are sometimes written in Arabic letters; proofread names, numbers and legal terms.
 - To try another model, for example the faster turbo version: `-m mlx-community/whisper-large-v3-turbo`. Only models converted to MLX format work.
+
+## MCP server
+
+The same transcription is available to MCP clients (Claude Code, Claude Desktop, etc.) through a stdio server with one tool, `transcribe`.
+
+Register it for every project (user scope) in Claude Code:
+
+```bash
+claude mcp add --scope user whisper-transcribe -- \
+  uv run --directory /path/to/whisper-transcribe transcribe-mcp
+```
+
+Tool arguments:
+
+| Argument | Default | Meaning |
+|---|---|---|
+| `path` | required | absolute path of the audio or video file |
+| `language` | `auto` | `auto`, `ar` or `fr` |
+| `prompt` | none | short text in the spoken language to guide spelling |
+| `timestamps` | `false` | also return segments with start/end times |
+| `save_formats` | none | files to write among `txt`, `srt`, `json` |
+| `out_dir` | next to the input | folder for the saved files |
+
+It returns the detected language, the duration, the full text and the paths of saved files. Set the `WHISPER_MODEL` environment variable to use another MLX Whisper model.
